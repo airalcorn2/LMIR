@@ -35,6 +35,8 @@ class LMIR:
             for token in token_counts:
                 p_ml[token] = token_counts[token] / doc_len
 
+            doc_p_mls.append(p_ml)
+
         total_tokens = sum(all_token_counts.values())
         p_C = {token: token_count / total_tokens
                for (token, token_count) in all_token_counts.items()}
