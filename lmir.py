@@ -1,6 +1,8 @@
 # Michael A. Alcorn (malcorn@redhat.com)
 # See: http://sifaka.cs.uiuc.edu/czhai/pub/sigir2001-smooth.pdf.
 
+from math import log
+
 
 class LMIR:
     def __init__(self, corpus, lamb=0.1, mu=2000, delta=0.7):
@@ -60,7 +62,7 @@ class LMIR:
             p_ml = self.p_ml[doc_idx]
             score = 0
             for token in query_tokens:
-                score += (1 - lamb) * p_ml[token] + lamb * p_C[token]
+                score -= log((1 - lamb) * p_ml[token] + lamb * p_C[token])
 
             scores.append(score)
 
@@ -81,7 +83,7 @@ class LMIR:
             doc_len = self.doc_lens[doc_idx]
             score = 0
             for token in query_tokens:
-                score += (c[token] + mu * p_C[token]) / (doc_len + mu)
+                score -= log((c[token] + mu * p_C[token]) / (doc_len + mu))
 
             scores.append(score)
 
@@ -103,7 +105,7 @@ class LMIR:
             d_u = len(c)
             score = 0
             for token in query_tokens:
-                score += max(c[token] - delta, 0) / doc_len + delta * d_u / doc_len * p_C[token]
+                score -= log(max(c[token] - delta, 0) / doc_len + delta * d_u / doc_len * p_C[token])
 
             scores.append(score)
 
