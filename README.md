@@ -11,6 +11,6 @@ docs = [doc_1, doc_2]
 
 models = lmir.LMIR(docs)
 
-models.jelinek_mercer("This document has some words that match.".split())
-models.jelinek_mercer("No matches.".split())
+print(models.jelinek_mercer("This document has some words that match.".split()))
+print(models.jelinek_mercer("No matches.".split()))
 ```
