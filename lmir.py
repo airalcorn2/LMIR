@@ -1,5 +1,7 @@
 # Michael A. Alcorn (malcorn@redhat.com)
-# See: http://sifaka.cs.uiuc.edu/czhai/pub/sigir2001-smooth.pdf.
+# [1] Zhai, C. and Lafferty, J. 2004. A study of smoothing methods for language models applied
+#         to information retrieval. In ACM Transactions on Information Systems (TOIS), pp. 179-214.
+#         http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.94.8019&rep=rep1&type=pdf
 
 from math import log
 
@@ -62,7 +64,10 @@ class LMIR:
             p_ml = self.p_ml[doc_idx]
             score = 0
             for token in query_tokens:
-                score -= log((1 - lamb) * p_ml[token] + lamb * p_C[token])
+                if token not in p_C:
+                    continue
+
+                score -= log((1 - lamb) * p_ml.get(token, 0) + lamb * p_C[token])
 
             scores.append(score)
 
@@ -83,7 +88,10 @@ class LMIR:
             doc_len = self.doc_lens[doc_idx]
             score = 0
             for token in query_tokens:
-                score -= log((c[token] + mu * p_C[token]) / (doc_len + mu))
+                if token not in p_C:
+                    continue
+
+                score -= log((c.get(token, 0) + mu * p_C[token]) / (doc_len + mu))
 
             scores.append(score)
 
@@ -105,7 +113,10 @@ class LMIR:
             d_u = len(c)
             score = 0
             for token in query_tokens:
-                score -= log(max(c[token] - delta, 0) / doc_len + delta * d_u / doc_len * p_C[token])
+                if token not in p_C:
+                    continue
+
+                score -= log(max(c.get(token, 0) - delta, 0) / doc_len + delta * d_u / doc_len * p_C[token])
 
             scores.append(score)
 
