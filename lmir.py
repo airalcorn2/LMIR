@@ -31,7 +31,7 @@ class LMIR:
             token_counts = {}
             for token in doc:
                 token_counts[token] = token_counts.get(token, 0) + 1
-                all_token_counts[token] = token_counts.get(token, 0) + 1
+                all_token_counts[token] = all_token_counts.get(token, 0) + 1
 
             doc_token_counts.append(token_counts)
 
@@ -42,8 +42,10 @@ class LMIR:
             doc_p_mls.append(p_ml)
 
         total_tokens = sum(all_token_counts.values())
-        p_C = {token: token_count / total_tokens
-               for (token, token_count) in all_token_counts.items()}
+        p_C = {
+            token: token_count / total_tokens
+            for (token, token_count) in all_token_counts.items()
+        }
 
         self.N = len(corpus)
         self.c = doc_token_counts
@@ -116,7 +118,10 @@ class LMIR:
                 if token not in p_C:
                     continue
 
-                score -= log(max(c.get(token, 0) - delta, 0) / doc_len + delta * d_u / doc_len * p_C[token])
+                score -= log(
+                    max(c.get(token, 0) - delta, 0) / doc_len
+                    + delta * d_u / doc_len * p_C[token]
+                )
 
             scores.append(score)
 
